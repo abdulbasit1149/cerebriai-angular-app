@@ -142,11 +142,14 @@ describe('angular-demo-app App', () => {
     expect(zip_field.getAttribute("value")).toMatch(REGEX);
   })
 
-  it('invalid form: missing fields', () => {
+  it('valid form', () => {
     let form = element(by.css('app-root form'));
 
     element(by.css('app-root input.first-name-input')).sendKeys('Abdul');
     element(by.css('app-root input.last-name-input')).sendKeys('Basit');
+    element(by.css('app-root div.male-input input')).click();
+    element(by.css('app-root select')).click();
+    element(by.css('app-root select option')).click();
     element(by.css('app-root input.email-input')).sendKeys('a@a.com');
     element(by.css('app-root input.phone-input')).sendKeys('123-123-1232');
     element(by.css('app-root input.city-input')).sendKeys('Guelph');
@@ -154,6 +157,44 @@ describe('angular-demo-app App', () => {
     element(by.css('app-root input.zipcode-input')).sendKeys('12345');
 
     form.submit();
+
+    let alert = browser.switchTo().alert();
+    expect(alert.getText()).toMatch('SUCCESS');
+    alert.accept();
+    expect(form.getAttribute("class")).toMatch('ng-valid');
+  })
+
+  it('invalid form: missing fields', () => {
+    let form = element(by.css('app-root form'));
+
+    element(by.css('app-root input.first-name-input')).sendKeys('Abdul');
+
+    form.submit();
     expect(form.getAttribute("class")).toMatch('ng-invalid');
   })
+
+
+  it('valid reset form', () => {
+    // Fill out the form
+    element(by.css('app-root input.first-name-input')).sendKeys('Abdul');
+    element(by.css('app-root input.last-name-input')).sendKeys('Basit');
+    element(by.css('app-root div.male-input input')).click();
+    element(by.css('app-root select')).click();
+    element(by.css('app-root select option')).click();
+    element(by.css('app-root input.email-input')).sendKeys('a@a.com');
+    element(by.css('app-root input.phone-input')).sendKeys('123-123-1232');
+    element(by.css('app-root input.city-input')).sendKeys('Guelph');
+    element(by.css('app-root input.state-input')).sendKeys('ONT');
+    element(by.css('app-root input.zipcode-input')).sendKeys('12345');
+  
+    // Check if form is valid
+    expect(element(by.css('app-root form')).getAttribute("class")).toMatch('ng-valid');
+
+    // Click "Reset" Form
+    element(by.css('app-root button[type="reset"]')).click();
+
+    // Check if form is invalid
+    expect(element(by.css('app-root form')).getAttribute("class")).toMatch('ng-invalid');
+  })
+
 });
